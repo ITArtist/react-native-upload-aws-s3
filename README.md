@@ -34,7 +34,7 @@ The user associated with the `accessKey` and `secretKey` you use must have the a
 
 ```javascript
 
-import { RNS3 } from 'react-native-aws3';
+import { RNS3 } from 'react-native-upload-aws-s3';
 
 
 async function uploadToS3(){
