@@ -1,6 +1,6 @@
 {
   "name": "react-native-upload-aws-s3",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Pure JavaScript react native library for uploading to AWS S3",
   "author": {
     "name": "Joshua Kim"
