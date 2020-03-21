@@ -1,14 +1,11 @@
-# React Native AWS3
+# React Native Upload AWS S3
 
-React Native AWS3 is a module for uploading files to S3. Unlike other libraries out there, there are no native dependencies.
+React Native Upload AWS S3 is a module for uploading files to S3. The base module is benjreinhart's `React Native AWS3(https://github.com/benjreinhart/react-native-aws3)`. The reason I made it new based on his module is that his module has not been uploaded for a long time and causes an SSL error.
 
 ```
-npm install --save react-native-aws3
+npm install react-native-upload-aws-s3
+yarn add react-native-upload-aws-s3
 ```
-
-[![build status](https://circleci.com/gh/benjreinhart/react-native-aws3.svg?style=shield&circle-token=c7cb5ba4654c9d66bbfeac9809e50aa0fbf0af09)](https://circleci.com/gh/benjreinhart/react-native-aws3)
-[![npm version](https://img.shields.io/npm/v/react-native-aws3.svg?style=flat-square)](https://www.npmjs.com/package/react-native-aws3)
-[![npm downloads](https://img.shields.io/npm/dm/react-native-aws3.svg?style=flat-square)](https://www.npmjs.com/package/react-native-aws3)
 
 ## Note on S3 user permissions
 
@@ -16,17 +13,13 @@ The user associated with the `accessKey` and `secretKey` you use must have the a
 
 ```json
 {
-    "Version": "2012-10-17",
+    "Version": "2020-03-21",
     "Statement": [
         {
-            "Sid": "Stmt1458840156000",
+            "Sid": "stmt20200321",
             "Effect": "Allow",
             "Action": [
-                "s3:GetObject",
-                "s3:GetObjectAcl",
-                "s3:GetObjectVersion",
                 "s3:PutObject",
-                "s3:PutObjectAcl",
                 "s3:PutObjectVersionAcl"
             ],
             "Resource": [
@@ -40,39 +33,48 @@ The user associated with the `accessKey` and `secretKey` you use must have the a
 ## Example
 
 ```javascript
+
 import { RNS3 } from 'react-native-aws3';
 
-const file = {
-  // `uri` can also be a file system path (i.e. file://)
-  uri: "assets-library://asset/asset.PNG?id=655DBE66-8008-459C-9358-914E1FB532DD&ext=PNG",
-  name: "image.png",
-  type: "image/png"
-}
 
-const options = {
-  keyPrefix: "uploads/",
-  bucket: "your-bucket",
-  region: "us-east-1",
-  accessKey: "your-access-key",
-  secretKey: "your-secret-key",
-  successActionStatus: 201
-}
+async function uploadToS3(){
+  const file = {
+    // `uri` can also be a file system path (i.e. file://)
+    uri: "assets-library://asset/asset.PNG?id=655DBE66-8008-459C-9358-914E1FB532DD&ext=PNG",
+    name: "image.png",
+    type: "image/png"
+  }
 
-RNS3.put(file, options).then(response => {
-  if (response.status !== 201)
-    throw new Error("Failed to upload image to S3");
-  console.log(response.body);
-  /**
-   * {
-   *   postResponse: {
-   *     bucket: "your-bucket",
-   *     etag : "9f620878e06d28774406017480a59fd4",
-   *     key: "uploads/image.png",
-   *     location: "https://your-bucket.s3.amazonaws.com/uploads%2Fimage.png"
-   *   }
-   * }
-   */
-});
+  const options = {
+    keyPrefix: "uploads/",
+    bucket: "your-bucket",
+    region: "us-east-1",
+    accessKey: "your-access-key",
+    secretKey: "your-secret-key",
+    successActionStatus: 201
+  }
+
+  try{
+    const response = await RNS3.put(file, options)
+    if (response.status === 201){
+      console.log("Success: ", response.body)
+      /**
+       * {
+       *   postResponse: {
+       *     bucket: "your-bucket",
+       *     etag : "9f620878e06d28774406017480a59fd4",
+       *     key: "uploads/image.png",
+       *     location: "https://your-bucket.s3.amazonaws.com/uploads%2Fimage.png"
+       *   }
+       * }
+       */
+    } else {
+      console.log("Failed to upload image to S3: ", response)
+    }
+  } catch(error){
+    console.log(error)
+  }
+}
 ```
 
 ## Usage
@@ -115,11 +117,27 @@ RNS3.put(file, option)
   .abort();
 ```
 
-## TODO
-
-- [ ] Support `DeleteObject` and (authenticated) `GetObject` operations.
-
 
 ## License
 
-[MIT](https://github.com/benjreinhart/react-native-aws3/blob/master/LICENSE.txt)
+MIT License
+
+Copyright (c) 2020 Joshua Kim
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
