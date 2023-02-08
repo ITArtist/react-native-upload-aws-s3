@@ -38,7 +38,13 @@ export class RNS3 {
       contentType: file.type
     }
 
-    var url = 'https://s3-' + options.region + '.' + (options.awsUrl || AWS_DEFAULT_S3_HOST) + '/' + options.bucket;
+    var url
+    if (options.region) {
+      url = 'https://s3.' + options.region + '.' + (options.awsUrl || AWS_DEFAULT_S3_HOST) + '/' + options.bucket;
+    } else {
+      url = 'https://s3.' + (options.awsUrl || AWS_DEFAULT_S3_HOST) + '/' + options.bucket;
+    }
+    
     const method = "POST"
     const policy = S3Policy.generate(options)
 
